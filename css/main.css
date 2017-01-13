@@ -1,0 +1,82 @@
+body{
+	background-color: #f5ca5c;
+}
+
+#title{
+	/*display: inline-block;*/
+	text-align: center;
+	font-size: 28px;
+}
+
+nav{
+	background-color: black;
+	color: white;
+	font-size: 24px;
+
+}
+
+.navtab{
+	padding: 20px;
+	display: inline-block;
+	text-decoration: none;
+	color: white;
+	border-radius: 50%;
+}
+
+.navtab:hover{
+	background-color: rgb(190, 198, 206);
+	color: black;
+}
+
+.navcurrent{
+	background-color: rgb(68, 114, 196);
+}
+
+.user{
+	background-color: rgb(0, 192, 91);
+	display: inline-block;
+	float: right;
+}
+
+.main-content{
+	margin-left: 75px;
+}
+
+.hide{
+	display: none;
+}
+
+.subtitle{
+	margin-left: 20px;
+	margin-top: 20px;
+	font-size: 25px;
+}
+
+.inputs{
+	margin-left: 20px;
+	margin-top: 20px;
+	font-size: 18px;
+}
+
+#newreq{
+	display:inline-block;
+ 	border-radius: 50%;
+ 	border: 2px solid black;
+ 	margin-left: 20px;
+}
+
+fieldset{
+	border: none;
+	margin-bottom: 10px;
+}
+
+#page2{
+	display: none;
+}
+
+input{
+	border-radius: 50px;
+	border:none;
+	font-size: 16px;
+	padding: 9px;
+}
