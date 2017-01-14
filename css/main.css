@@ -39,7 +39,7 @@ nav{
 }
 
 .main-content{
-	margin-left: 75px;
+	text-align: center;
 }
 
 .hide{
@@ -63,20 +63,123 @@ nav{
  	border-radius: 50%;
  	border: 2px solid black;
  	margin-left: 20px;
+ 	padding: 80px;
 }
 
 fieldset{
 	border: none;
 	margin-bottom: 10px;
+	text-align: left;
 }
 
 #page2{
 	display: none;
 }
 
-input{
+input, select, textarea{
 	border-radius: 50px;
 	border:none;
 	font-size: 16px;
 	padding: 9px;
+}
+
+.oneline{
+	width: 300px;
+}
+
+#descrption{
+	width: 400px;
+}
+
+.navButton{
+	padding: 15px;
+	font-size: 16px;
+	border-radius: 50px;
+	float: right;
+	border: none;
+
+}
+
+.greenButton{
+	 background-color: rgb(102, 170, 68);
+
+}
+
+td{
+	font-size: 18px;
+	width: 100px;
+	text-align: center;
+	padding: 5px;
+}
+
+th{
+	text-decoration: none;
+	width: 120px;
+	font-size: 20px;
+	font-weight: normal;
+	text-align: center;
+}
+
+tr{
+	border-bottom: 2px solid black;
+}
+
+.inline{
+	display: inline-block;
+}
+
+.rightText{
+	text-align: right;
+}
+
+#add{
+	border-radius: 100%;
+	background-color: rgb(0, 119, 255);
+	border: none;
+	width: 30px;
+	height: 30px;
+	font-size: 25px;
+}
+
+#screen{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	z-index: 1;
+	background-color: rgba(0,0,0,0.30);
+	width: 100%;
+	height: 100%;
+}
+
+.lineItemDiv{
+	position: absolute;
+	z-index: 10;
+	margin-bottom: 10px;
+	background-color: #f5ca5c;
+	top: 150px;
+	left: 250px;
+	border-radius: 50px;
+	border:none;	
+	padding: 40px;
+}
+
+.close{
+	float: right;
+	border-radius: 100%;
+	border:none;
+	width: 30px;
+	height: 30px;
+	font-size: 25px;
+	background-color: rgb(255, 68, 68);
+}
+
+.smallWidth{
+	display: inline-block;
+	width: 110px;
+	text-align: center;
+	margin-left: 20px;
+}
+
+.num{
+	width: 110px;
 }
