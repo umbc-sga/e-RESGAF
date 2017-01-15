@@ -97,7 +97,7 @@ input, select, textarea{
 	border-radius: 50px;
 	float: right;
 	border: none;
-
+	margin:5px;
 }
 
 .greenButton{
@@ -177,9 +177,49 @@ tr{
 	display: inline-block;
 	width: 110px;
 	text-align: center;
-	margin-left: 20px;
+	margin-left: 100px;
 }
 
 .num{
 	width: 110px;
+}
+
+#costs{
+	text-align: center;
+	max-width: 700px;
+} 
+
+.error{
+	border-radius: 50px;
+	border:2px solid red;
+	display: inline-block;
+	margin-left: 40px;
+	font-size: 20px;
+	padding: 10px;
+}
+
+.required{
+	color: red;
+	font-size: 16px;
+}
+
+#prev{
+	background-color: rgb(206);
+}
+
+.remove{
+	border-radius: 100%;
+	border:none;
+	width: 30px;
+	height: 30px;
+	font-size: 25px;
+	background-color: rgb(255, 68, 68);
+}
+
+.editButton{
+	background-color: rgb(119, 4, 234);
+}
+
+.edits{
+	text-align: left;
 }
