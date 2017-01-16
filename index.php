@@ -9,3 +9,5 @@
 		document.getElementById("navHame").className += "navcurrent";
 	}
 </script>
+
+<?php include "includes/footer.php";?>

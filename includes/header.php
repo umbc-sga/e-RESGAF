@@ -15,7 +15,18 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 </head>
 <body>
-<div id="title">UMBC SGA RESGAF</div>
+<div id="title">
+	UMBC SGA RESGAF
+	<ul class="nav">
+    	<li> <a href="http://50.umbc.edu/">UMBC50</a> </li>
+      	<li> <a href="http://umbc.edu/go/umbc-azindex">A-Z Index</a> </li>
+      	<li> <a href="http://my.umbc.edu/">myUMBC</a> </li>
+      	<li> <a href="http://my.umbc.edu/events">Events</a> </li>
+      	<li> <a href="http://umbc.edu/go/directory">Directory</a> </li>
+      	<li> <a href="http://umbc.edu/go/maps">Maps</a> </li>
+      	<li> <a href="http://umbc.edu/search">Search</a> </li>
+    </ul>
+</div>
 <nav>
 	<a href="/e-resgaf"><div class="navtab " id = "navHame">
 		 Home

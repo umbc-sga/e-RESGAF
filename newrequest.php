@@ -13,9 +13,9 @@
 				Enter all fields with a * next to them.
 			</div>
 			<div class="inputs">
-				Name <input type="text" name="name" size="65" maxlength="100" required><br> <br>
+				Name <input type="text" name="creator" size="65" maxlength="100" value="<?php echo $_SERVER['givenName'] . " " . $_SERVER['sn'];?>" required><br> <br>
 				Orginization <input type="text" name="organization" size="60" required> <br> <br>
-				Email <input type="text" name="email" size="40" maxlength="50" required>
+				Email <input type="text" name="email" size="40" maxlength="50" value="<?php echo $_SERVER['mail'];?>" required>
 				Phone <input type="text" name="phone" size="15" maxlength="15" required> <br> <br>
 				Type of Expenditure 
 				<select name="type" id = "type" class="oneline" >
@@ -24,12 +24,12 @@
 				</select> <br> <br>
 				<span id = "eventType" >
 					
-					Event Name <input type="text" name="eventName" id="eventName" maxlength="100" required>
-					Date <input type="date" name="eventDate" id="eventDate" required>
-					Time <input type="time" name="eventTime" id="eventTime" required> <br> <br>
+					Event Name <span class="required">*</span><input type="text" name="eventName" id="eventName" maxlength="100" >
+					Date <span class="required">*</span> <input type="date" name="eventDate" id="eventDate">
+					Time <span class="required">*</span> <input type="time" name="eventTime" id="eventTime"><br> <br>
 				</span>
 				<span id = "otherType" >
-					Description of Expenditure <textarea name="description" rows="3" id = "descrption"></textarea>
+					Description of Expenditure <span class="required">*</span><textarea name="description" rows="3" id = "descrption"></textarea> <br><br>
 				</span>
 				SGA Budget Line Item:
 				<select name="budgetItem" class="oneline" required>
@@ -71,7 +71,7 @@
 			<button type="button" id="prev" class="navButton">Back</button>
 
 			<div id="screen" hidden> </div> 
-			<input type="number" name="numLines" id="numLines" hidden>
+			<input type="number" name="numLines" id="numLines" value="0" hidden>
 		</fieldset>
 	</form>
 </div>
@@ -107,19 +107,28 @@
 		
 		$('#next').click(function(){
 			var reqs = $('#page1 :required');
+			$('#page1Error').show();
 			var next = true;
 			$.each(reqs, function(){
 				if (this.value.length == 0){
-					$('#page1Error').show();
 					next = false;
 					return;
 				}
 			})
-			// if(next){
+			
+			if($('#type').val() == 'event'){
+				if($('#eventName').val().length == 0 || $('#eventDate').val().length == 0 || $('#eventTime').val().length == 0){
+					next = false;
+				}
+			}else if($('#descrption').val().length == 0){
+				next = false;
+			}
+
+			if(next){
 				$('#page1Error').hide();
 				$('#page1').hide();
 				$('#page2').show();
-			// }
+			}
 		})
 
 		$('#add').click(function(){
@@ -198,6 +207,7 @@
 		$('#screen').hide();
 		$('#newLine' + lineNum).hide();
 		lineNum = maxnum;
+		$('#numLines').val(lineNum);
 	}
 
 	function remove(num){
