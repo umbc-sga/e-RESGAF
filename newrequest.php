@@ -14,7 +14,7 @@
 			</div>
 			<div class="inputs">
 				Name <input type="text" name="creator" size="65" maxlength="100" value="<?php echo $_SERVER['givenName'] . " " . $_SERVER['sn'];?>" required><br> <br>
-				Orginization <input type="text" name="organization" size="60" required> <br> <br>
+				Organization <input type="text" name="organization" size="60" required> <br> <br>
 				Email <input type="text" name="email" size="40" maxlength="50" value="<?php echo $_SERVER['mail'];?>" required>
 				Phone <input type="text" name="phone" size="15" maxlength="15" required> <br> <br>
 				Type of Expenditure 
@@ -207,7 +207,7 @@
 		$('#screen').hide();
 		$('#newLine' + lineNum).hide();
 		lineNum = maxnum;
-		$('#numLines').val(lineNum);
+		$('#numLines'	).val(lineNum);
 	}
 
 	function remove(num){
