@@ -37,9 +37,6 @@
 	<a href="viewrequests.php"><div class="navtab " id = "navView">
 		View Requests
 	</div></a>
-	<a href="approverequests.php"><div class="navtab <?php if(!$approve){echo 'hide';}?>" id = "navApprove">
-		Approve Requests
-	</div></a>
 	<div class="user navtab">
 		<?php echo $_SERVER['givenName'];?>
 	</div>

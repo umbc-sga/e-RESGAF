@@ -40,7 +40,7 @@
 
 	//INSERT INTO `eresgaf_lineItem`(`requestId`, `descrption`, `venderName`, `cost`, `sgaAllocation`, `clubAccount`, `phone`, `address`, `finssn`, `contactPerson`) VALUES ()
 	for($i = 1; $i <= $numLines; $i++){
-		$sql = 'INSERT INTO `eresgaf_lineItem`(`requestId`, `descrption`, `venderName`, `cost`, `sgaAllocation`, `clubAccount`';
+		$sql = 'INSERT INTO `eresgaf_lineItem`(`requestId`, `description`, `venderName`, `cost`, `sgaAllocation`, `clubAccount`';
 		$vals = '' . $reqId . ', "' . $_POST['descriptionLine' . $i] . '", "' . $_POST['vender' . $i] .'"';
 		$vals .= ', ' . ($_POST['SGAall' . $i] + $_POST['clubacc' . $i]) . ', ' . $_POST['SGAall' . $i];
 		$vals .= ', ' . $_POST['clubacc' . $i];
