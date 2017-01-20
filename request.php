@@ -57,7 +57,7 @@
 		<div class="inputs">
 			<?php
 				if($resgaf['expenditureDescription']){
-					echo "Event Description: " . $resgaf['expenditureDescription'];
+					echo "Expenditure Description: " . $resgaf['expenditureDescription'];
 				}else{
 					echo "Event Name: " . $resgaf['eventName'] . '<br><br>';
 					$date = strtotime($resgaf['eventDateTime']);
@@ -116,8 +116,18 @@
 	?>
 	</table>
 	<div class="navs">
-		<button type="button" id="prev" class="navButton greenButton">Approve</button>
-		<button type="button" id="prev" class="navButton purpleButton">Edit </button>
+		<?php
+			$sql = 'SELECT * FROM `eresgaf_privilegedUser` WHERE `email` = \'' . $_SERVER['mail'] . "'";
+			$results = mysqli_query($link, $sql);
+			if(mysqli_num_rows($results) > 0 && !$resgaf['approved']){
+				echo '<button type="button" id="prev" class="navButton greenButton" onclick="approve()">Approve</button>';
+			}
+
+			if($resgaf['email'] == $_SERVER['mail']&& !$resgaf['approved']){
+				echo '<button type="button" id="prev" class="navButton purpleButton">Edit </button>';
+			}
+		?>
+		
 	</div>
 	<div class ="subtitle">Comments</div>
 
@@ -138,10 +148,14 @@
 			$commentBox .= '</div>';
 			echo $commentBox;
 		}
+		$sql = "SELECT * FROM `eresgaf_privilegedUser` WHERE `email` = '" . $_SERVER['mail'] . "'";
+		$results = mysqli_query($link, $sql);
+		if($row = mysqli_fetch_assoc($results)){
+			echo '<textarea id="newComment" rows="2" > </textarea> <button type="button" class="navButton greenButton" id = "postComment">Post</button>';
+		}
 	?>
 
-	<textarea id="newComment" rows="2" > </textarea> 
-	<button type="button" class="navButton greenButton" id = "postComment">Post</button>
+	
 </div>
 
 <script type="text/javascript">
@@ -161,7 +175,7 @@
 				'name': name,
 				'requestId': resId,
 				'text':comment
-			}, function(a){alert(a);});
+			});
 
 			var commentBox = '<div>';
 			if(email == "<?php echo $resgaf['email'];?>"){
@@ -175,6 +189,15 @@
 
 			$('#newComment').before(commentBox);
 		})
+
+		
 	})
+	function approve(){
+		var form ='<form method="post" action="approveRequest.php" class="hide" id="form">';
+		form += '<input type="number" name="resId" value="<?php echo $resgaf['id'];?>" >';
+		form += '</form';
+		$('#newComment').after(form);
+		$('#form').submit();
+	}
 </script>
 <?php include "includes/footer.php";?>

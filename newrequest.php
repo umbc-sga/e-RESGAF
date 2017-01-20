@@ -44,6 +44,30 @@
 					?>
 				</select>
 				<br> <br>
+				Choose who to 
+				<select name="notifyPeople" class="oneline" required>
+					<?php
+						require "../../cgi-bin/mysqlcred.php";
+						$sql = 'SELECT * FROM `eresgaf_privilegedUser`';
+						$results = mysqli_query($link, $sql);
+						$order = ['Notify all', '', ''];
+						$val = ['all', '', ''];
+						while ($row = mysqli_fetch_assoc($results)){
+							if($row['isPresident'] == 1){
+								$order[1] = 'SGA President - ' . $row['name'];
+								$val[1] = $row['email'];
+							}else if($row['isTreasurer'] == 1){
+								$order[2] = 'SGA Tresurer - ' . $row['name'];
+								$val[2] = $row['email'];
+							}
+						}
+
+						for($i = 0; $i < count($order); $i++){
+							if(strlen($order[$i]) > 0)
+								echo '<option value="' . $val[$i] . '">' . $order[$i] . '</option>';
+						}
+					?>
+				</select>
  				<button id="next" type="button" class="navButton greenButton" >Next</button>
 			</div>
 		</fieldset>

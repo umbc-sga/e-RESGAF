@@ -68,6 +68,22 @@
 		mysqli_query($link, $sql);
 	}
 
+	require "sendEmail.php";
+	$notify = $_POST['notifyPeople'];
+	$emails = [];
+	$advisor = ''; 
+	$sql = 'SELECT * FROM `eresgaf_privilegedUser`';
+	$results = mysqli_query($link, $sql);
+	while ($row = mysqli_fetch_assoc($results)){
+		$emails[] = $row['email'];
+		if($row['isAdviser'] == 1)
+			$advisor = $row['email'];
+	}
+	if($notify == 'all'){
+		newRequest($reqId, $emails);
+	}else{
+		newRequest($reqId, [$notify, $advisor]);
+	}
 ?>
 
 </div>
