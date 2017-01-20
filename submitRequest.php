@@ -9,36 +9,53 @@
 <br><br><br><br><br><br>
 <?php
 	require "../../cgi-bin/mysqlcred.php";
-	$sql = 'INSERT INTO `eresgaf_request`(`organization`, `creator`, `email`';
-	$vals = '' . '"' . $_POST['organization'] . '" ';
-	$vals .= ', "' . $_POST['creator'] . '", "' . $_POST['email'] . '"';
+	$resId = 0;
+	if(isset($_POST['resId'])){
+		$sql = 'UPDATE `eresgaf_request` SET `organization`= "' . $_POST['organization'];
+		$sql .='",`email`="' . $_POST['email'] . '",`phone`="'. $_POST['phone'];
+		$sql .='",`budgetItem`="' . $_POST['budgetItem'] . '" ,`eventType`=';
+		if($_POST['type'] == "event"){
+			$sql .= '1, `eventName`="' . $_POST['eventName'] . '", `eventDateTime= "'. date("Y-m-d", strtotime($_POST['eventDate'])) . ' ' . date("H:i:s", strtotime($_POST['eventTime'])) . '"';
+		}else{
+			$sql .= '0, `expenditureDescription`="' . $_POST['description'] . '"';
+		}
+		$sql .=' WHERE `id` =' . $_POST['resId'];
+		mysqli_query($link, $sql);
+		$reqId = (int)($_POST['resId']);
+		$sql = 'DELETE FROM `eresgaf_lineItem` WHERE `requestId`=' . $reqId;
+		mysqli_query($link, $sql);
+	}else if (0){
+		$sql = 'INSERT INTO `eresgaf_request`(`organization`, `creator`, `email`, `budgetItem`';
+		$vals = '' . '"' . $_POST['organization'] . '" ';
+		$vals .= ', "' . $_POST['creator'] . '", "' . $_POST['email'] . '", "' . $_POST['budgetItem'];
 
-	$sql .= ', `phone`, `eventType`';
-	$vals .= ', "' . $_POST['phone'] . '", ';
-	if($_POST['type'] == "event"){
-		$vals .= 1;
-		$sql .= ', `eventName`, `eventDateTime`';
-		$vals .= ', "' . $_POST['eventName'] . '", "'. date("Y-m-d", strtotime($_POST['eventDate'])) . ' ';
-		$vals .= '' . date("H:i:s", strtotime($_POST['eventTime'])) . '"';
-	}else{
-		$vals .= 0;
-		$sql .= ', `expenditureDescription`';
-		$vals .= ', "' . $_POST['description'] . '"';
+		$sql .= ', `phone`, `eventType`';
+		$vals .= ', "' . $_POST['phone'] . '", ';
+		if($_POST['type'] == "event"){
+			$vals .= 1;
+			$sql .= ', `eventName`, `eventDateTime`';
+			$vals .= ', "' . $_POST['eventName'] . '", "'. date("Y-m-d", strtotime($_POST['eventDate'])) . ' ';
+			$vals .= '' . date("H:i:s", strtotime($_POST['eventTime'])) . '"';
+		}else{
+			$vals .= 0;
+			$sql .= ', `expenditureDescription`';
+			$vals .= ', "' . $_POST['description'] . '"';
+		}
+
+		$sql .=') VALUES (' . $vals . ')';
+		mysqli_query($link, $sql);
+		$reqId = 0;
+		$sql = 'SELECT `id` FROM `eresgaf_request` WHERE `organization` = "';
+		$sql .= $_POST['organization'] . '" AND `creator`=' . '"' . $_POST['creator'] . '" ORDER BY date DESC';
+		$results = mysqli_query($link, $sql);
+		if($row = mysqli_fetch_assoc($results)){
+			$reqId = (int)($row['id']);
+		}
+		
 	}
-
-	$sql .=') VALUES (' . $vals . ')';
-	mysqli_query($link, $sql);
-
 	$numLines = $_POST['numLines'];
-	$reqId = 0;
-	$sql = 'SELECT `id` FROM `eresgaf_request` WHERE `organization` = "';
-	$sql .= $_POST['organization'] . '" AND `creator`=' . '"' . $_POST['creator'] . '" ORDER BY date DESC';
-	$results = mysqli_query($link, $sql);
-	if($row = mysqli_fetch_assoc($results)){
-		$reqId = (int)($row['id']);
-	}
+		
 
-	//INSERT INTO `eresgaf_lineItem`(`requestId`, `descrption`, `venderName`, `cost`, `sgaAllocation`, `clubAccount`, `phone`, `address`, `finssn`, `contactPerson`) VALUES ()
 	for($i = 1; $i <= $numLines; $i++){
 		$sql = 'INSERT INTO `eresgaf_lineItem`(`requestId`, `description`, `venderName`, `cost`, `sgaAllocation`, `clubAccount`';
 		$vals = '' . $reqId . ', "' . $_POST['descriptionLine' . $i] . '", "' . $_POST['vender' . $i] .'"';
@@ -67,7 +84,6 @@
 		$sql .=') VALUES (' . $vals . ')';
 		mysqli_query($link, $sql);
 	}
-
 	require "sendEmail.php";
 	$notify = $_POST['notifyPeople'];
 	$emails = [];

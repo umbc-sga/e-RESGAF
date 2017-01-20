@@ -1,5 +1,5 @@
 <?php include "includes/header.php";
-	$id = $_GET['id'];
+	$id = $_POST['reqId'];
 	$sql = "SELECT * FROM `eresgaf_request` WHERE `id` = $id";
 	$results = mysqli_query($link, $sql);
 	$resgaf = mysqli_fetch_assoc($results);
@@ -124,7 +124,7 @@
 			}
 
 			if($resgaf['email'] == $_SERVER['mail']&& !$resgaf['approved']){
-				echo '<button type="button" id="prev" class="navButton purpleButton">Edit </button>';
+				echo '<button type="button" id="prev" onclick="edit()" class="navButton purpleButton">Edit </button>';
 			}
 		?>
 		
@@ -193,11 +193,19 @@
 		
 	})
 	function approve(){
-		var form ='<form method="post" action="approveRequest.php" class="hide" id="form">';
+		var form ='<form method="post" action="approveRequest.php" class="hide" id="formApprove">';
 		form += '<input type="number" name="resId" value="<?php echo $resgaf['id'];?>" >';
 		form += '</form';
 		$('#newComment').after(form);
-		$('#form').submit();
+		$('#formApprove').submit();
+	}
+
+	function edit(){
+		var form = '<form method="post" action ="newrequest.php" class="hide" id="formEdit">';
+		form += '<input type="number" name="resId" value="<?php echo $resgaf['id'];?>" >';
+		form += '</form>';
+		$('#newComment').after(form);
+		$('#formEdit').submit();
 	}
 </script>
 <?php include "includes/footer.php";?>

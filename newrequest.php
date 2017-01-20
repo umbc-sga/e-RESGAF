@@ -1,4 +1,19 @@
-<?php include "includes/header.php";?>
+<?php include "includes/header.php";
+
+	if(isset($_POST['resId'])){
+		$sql = "SELECT * FROM `eresgaf_request` WHERE `id` = " . $_POST['resId'];
+		$results = mysqli_query($link, $sql);
+		if($row = mysqli_fetch_assoc($results)){
+			$resgaf = $row;
+			$sql = "SELECT * FROM `eresgaf_lineItem` WHERE `requestId` = " . $resgaf['id'];
+			$results = mysqli_query($link, $sql);
+			$lineItems = array();
+			while ($row = mysqli_fetch_assoc($results)){
+				$lineItems[] = $row;
+			}
+		}
+	}
+?>
 
 <div class="main-content"> 
 	<div class="subtitle">
@@ -14,31 +29,35 @@
 			</div>
 			<div class="inputs">
 				Name <input type="text" name="creator" size="65" maxlength="100" value="<?php echo $_SERVER['givenName'] . " " . $_SERVER['sn'];?>" required><br> <br>
-				Organization <input type="text" name="organization" size="60" required> <br> <br>
+				Organization <input type="text" name="organization" size="60" value="<?php echo $resgaf['organization'];?>" required> <br> <br>
 				Email <input type="text" name="email" size="40" maxlength="50" value="<?php echo $_SERVER['mail'];?>" required>
-				Phone <input type="text" name="phone" size="15" maxlength="15" required> <br> <br>
+				Phone <input type="text" name="phone" size="15" maxlength="15" value="<?php echo $resgaf['phone'];?>" required> <br> <br>
 				Type of Expenditure 
-				<select name="type" id = "type" class="oneline" >
-					<option value="event">Event</option>
-					<option value="other">Other</option>
+				<select name="type" id = "type" class="oneline">
+					<option value="event" <?php if($resgaf['eventType'] == 1)echo 'selected';?>>Event</option>
+					<option value="other" <?php if($resgaf['eventType'] == 0)echo 'selected';?>>Other</option>
 				</select> <br> <br>
 				<span id = "eventType" >
 					
-					Event Name <span class="required">*</span><input type="text" name="eventName" id="eventName" maxlength="100" >
-					Date <span class="required">*</span> <input type="date" name="eventDate" id="eventDate">
-					Time <span class="required">*</span> <input type="time" name="eventTime" id="eventTime"><br> <br>
+					Event Name <span class="required">*</span><input type="text" name="eventName" id="eventName" maxlength="100" value="<?php echo $resgaf['eventName'];?>">
+					Date <span class="required">*</span> <input type="date" name="eventDate" id="eventDate" value="<?php echo date('Y-m-d', strtotime($resgaf['eventDateTime']));?>">
+					Time <span class="required">*</span> <input type="time" name="eventTime" id="eventTime" value="<?php echo date('H:i:s', strtotime($resgaf['eventDateTime']));?>"><br> <br>
 				</span>
 				<span id = "otherType" >
-					Description of Expenditure <span class="required">*</span><textarea name="description" rows="3" id = "descrption"></textarea> <br><br>
+					Description of Expenditure <span class="required">*</span><textarea name="description" rows="3" id = "descrption" ><?php echo $resgaf['expenditureDescription'];?></textarea> <br><br>
 				</span>
 				SGA Budget Line Item:
 				<select name="budgetItem" class="oneline" required>
+					<option disabled selected ></option>
 					<?php
 						require "../../cgi-bin/mysqlcred.php";
 						$sql = 'SELECT * FROM `eresgaf_budgetitem`';
 						$results = mysqli_query($link, $sql);
 						while ($row = mysqli_fetch_assoc($results)){
-							echo '<option value="' . $row['name']. '">' . $row['name'] . '</option>';
+							echo '<option value="' . $row['name']. '"';
+							if($resgaf['budgetItem'] == $row['name'])
+								echo 'selected';
+							echo '>' . $row['name'] . '</option>';
 					
 						}
 					?>
@@ -83,32 +102,83 @@
 					<th>SGA Allocation</th>
 					<th>Carry Over Club Account</th>
 				</tr>
+				<?php
+					$divs = '';
+					$sgatot = 0;
+					$clubtot = 0;
+					if(isset($lineItems)){
+						for($i = 0; $i < count($lineItems); $i++){
+							$row = '<tr id="line' . ($i + 1) . '">';
+							$row .= '<td><button type="button" id="close' . ($i + 1) . '" onclick="remove(' . ($i + 1) . ');" class="remove" id="remove' . ($i + 1) . '">X</td>';
+							$row .= '<td>' . $lineItems[$i]['description'] . '</td>';
+							$row .= '<td>$' . $lineItems[$i]['cost'] . '</td>';
+							$row .= '<td>$' . $lineItems[$i]['sgaAllocation'] . '</td>';
+							$sgatot += $lineItems[$i]['sgaAllocation'];
+							$row .= '<td>$' . $lineItems[$i]['clubAccount'] . '</td>';
+							$clubtot += $lineItems[$i]['clubAccount'];
+							$row .= '<td class="edits"><button class="navButton editButton" type="button" id="edit' . ($i + 1) . '" onclick="edit(' . ($i + 1) . ');">Edit</button> </td></tr>';
+							echo $row;
+
+							$newdiv = '<div class = "lineItemDiv" id="newLine' . ($i + 1) . '">';
+							$newdiv .= '<button type="button" class="close"> X</button>';
+							$newdiv .= '<div class="subtitle"> Add New LineItem</div>';
+							$newdiv .= '<div class="error" id="error' . ($i + 1) . '"> The description, two costs and vender are required.</div>';
+							$newdiv .= '<div class="inputs">';
+							$newdiv .= 'Description <input type="text" value="' . $lineItems[$i]['description'] . '" name="descriptionLine' . ($i + 1) . '" id="descriptionLine' . ($i + 1) . '" size="70" required> <br> <br>';
+							$newdiv .= '<div id="costs"> <span style="margin:0px;" class="smallWidth">SGA Allocation</span> <input type="number" value="' . $lineItems[$i]['sgaAllocation'] . '"" name="SGAall' . ($i + 1) . '" id="SGAall' . ($i + 1) . '" class="num" required>';
+							$newdiv .= '<span class="smallWidth">Carry Over Club Account</span> <input type="number" value="' . $lineItems[$i]['clubAccount'] . '" name= "clubacc' . ($i + 1) . '" id= "clubacc' . ($i + 1) . '" class="num" required></div> <br>';
+							$newdiv .= 'vender/payee <input type="text" value="' . $lineItems[$i]['venderName'] . '" name="vender' . ($i + 1) . '" id="vender' . ($i + 1) . '" size="25" maxlength="100" required>';
+							$newdiv .= '<span class="smallWidth">Phone</span> <input type="text" value="' . $lineItems[$i]['phone'] . '" name="phone' . ($i + 1) . '" id="phone' . ($i + 1) . '" size="20" maxlength="15"> <br> <br>';
+							$newdiv .= 'Address <input type="text"  value="' . $lineItems[$i]['address'] . ' " name="address' . ($i + 1) . '" id="address' . ($i + 1) . '" size="70"> <br> <br>';
+							$newdiv .= 'FIN/SSN <input type="text"  value="' . $lineItems[$i]['finssn'] . '" name="finssn' . ($i + 1) . '" id="finssn' . ($i + 1) . '" size="20" maxlength="20">';
+							$newdiv .= '<div class="smallWidth">Contact Person</div> <input type="text"  value="' . $lineItems[$i]['contactPerson'] . '" name="contact' . ($i + 1) . '" id="contact' . ($i + 1) . '" maxlength=100 size="30"> <br> <br>';
+							$newdiv .= '<button type="button" id="addrow' . ($i + 1) . '" onclick="addrow(' . ($i + 1) . ');" class="submitLone navButton greenButton">Submit</button>';
+							$newdiv .= '</div></div>';
+							$divs = $newdiv . $divs;
+						}
+					}
+				?>
 				<tr id="lastRow">
 					<td><button id="add" type="button">+</button></td>
 					<td class="rightText">Total</td>
-					<td id="cost"></td>
-					<td id="sgaAllc"></td>
-					<td id="club"></td>
+					<td id="cost">$<?php echo ($sgatot + $clubtot);?></td>
+					<td id="sgaAllc">$<?php echo $sgatot;?></td>
+					<td id="club">$<?php echo $clubtot;?></td>
 				</tr>
 			</table>
+			<?php echo $divs;?>
 			<input type="submit" id="submit" class="navButton greenButton">
 			<button type="button" id="prev" class="navButton">Back</button>
 
 			<div id="screen" hidden> </div> 
-			<input type="number" name="numLines" id="numLines" value="0" hidden>
+			<input type="number" name="numLines" id="numLines" value="<?php echo count($lineItems);?>" hidden>
+			<input type="number" name="resId" value="<?php echo $resgaf['id'];?>" hidden>
 		</fieldset>
 	</form>
 </div>
 
 <script type="text/javascript">
-	var costTotal = 0;
-	var sgaAlTotal = 0;
-	var clubAcTotal = 0;
-	var lineNum = 0;
+	var costTotal = <?php echo $sgatot + $clubtot;?>;
+	var sgaAlTotal = <?php echo $sgatot;?>;
+	var clubAcTotal = <?php echo $clubtot;?>;
+	var lineNum = <?php echo(count($lineItems));?>;
 	window.onload = function(){
 		document.getElementById("navNew").className += "navcurrent";
+		$('.lineItemDiv').hide();
+
+		$('.close').click(function(){
+			$('#newLine' + lineNum).remove();
+			$('#screen').hide();
+		})
+
 		$(':required').before('<span class="required">*</span>');
-		$('#otherType').hide();
+		var test = '<?php echo $resgaf['eventType'] == 1;?>';
+		if( test.length > 0){
+			$('#otherType').hide();
+		}
+		else{
+			$('#eventType').hide();
+		}
 		$('.error').hide();
 		$('#type').change(function(){
 			var val = $(this).val();
