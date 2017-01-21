@@ -9,7 +9,7 @@
 
 	function newComment($commenter, $reqname, $reqcreate, $id){
 		$message = $commenter . " has created a comment on your RESGAF for " . $reqname . '.';
-		$message .= '  View the RESGAF at sga-dev/umbc.edu/e-resgaf/request.php?id=' . $id;
+		$message .= '  View the RESGAF at ' . $_SERVER['SERVER_NAME']. dirname($_SERVER['REQUEST_URI'])  . '/request.php?reqId=' . $id . '.';
 		send($message, "New commont on UMBC SGA RESGAF", $reqcreate);
 	}
 
@@ -29,7 +29,8 @@
 			$to .= $emails[$i] . ', ';
 		}
 		$to = $to.trim(', ');
-		$message = 'A new RESGAF has been created.  It can be reviewed at sga-dev.umbc.edu/e-resgaf/request.php?id=' . $id . '.';
+		$message = 'A new RESGAF has been created.  It can be reviewed at ' . $_SERVER['SERVER_NAME']. dirname($_SERVER['REQUEST_URI'])  . '/request.php?reqId=' . $id . '.';
+		echo $message;
 		send($message, 'New RESGAF Summited', $to);
 	}
 ?>

@@ -1,7 +1,7 @@
 <?php include "includes/header.php";
 
-	if(isset($_POST['resId'])){
-		$sql = "SELECT * FROM `eresgaf_request` WHERE `id` = " . $_POST['resId'];
+	if(isset($_POST['reqId'])){
+		$sql = "SELECT * FROM `eresgaf_request` WHERE `id` = " . $_POST['reqId'];
 		$results = mysqli_query($link, $sql);
 		if($row = mysqli_fetch_assoc($results)){
 			$resgaf = $row;
@@ -34,14 +34,14 @@
 				Phone <input type="text" name="phone" size="15" maxlength="15" value="<?php echo $resgaf['phone'];?>" required> <br> <br>
 				Type of Expenditure 
 				<select name="type" id = "type" class="oneline">
-					<option value="event" <?php if($resgaf['eventType'] == 1)echo 'selected';?>>Event</option>
-					<option value="other" <?php if($resgaf['eventType'] == 0)echo 'selected';?>>Other</option>
+					<option value="event" <?php if(!isset($_POST['reqId']) || $resgaf['eventType'])echo 'selected';?>>Event</option>
+					<option value="other" <?php if(isset($_POST['reqId']) && !$resgaf['eventType'])echo 'selected';?>>Other</option>
 				</select> <br> <br>
 				<span id = "eventType" >
 					
 					Event Name <span class="required">*</span><input type="text" name="eventName" id="eventName" maxlength="100" value="<?php echo $resgaf['eventName'];?>">
-					Date <span class="required">*</span> <input type="date" name="eventDate" id="eventDate" value="<?php echo date('Y-m-d', strtotime($resgaf['eventDateTime']));?>">
-					Time <span class="required">*</span> <input type="time" name="eventTime" id="eventTime" value="<?php echo date('H:i:s', strtotime($resgaf['eventDateTime']));?>"><br> <br>
+					Date <span class="required">*</span> <input type="date" name="eventDate" id="eventDate" <?php if(isset($_POST['reqId'])) echo 'value="' . date('Y-m-d', strtotime($resgaf['eventDateTime']));?>">
+					Time <span class="required">*</span> <input type="time" name="eventTime" id="eventTime" <?php if(isset($_POST['reqId'])) echo 'value="' . date('H:i:s', strtotime($resgaf['eventDateTime']));?>"><br> <br>
 				</span>
 				<span id = "otherType" >
 					Description of Expenditure <span class="required">*</span><textarea name="description" rows="3" id = "descrption" ><?php echo $resgaf['expenditureDescription'];?></textarea> <br><br>
@@ -152,7 +152,7 @@
 
 			<div id="screen" hidden> </div> 
 			<input type="number" name="numLines" id="numLines" value="<?php echo count($lineItems);?>" hidden>
-			<input type="number" name="resId" value="<?php echo $resgaf['id'];?>" hidden>
+			<input type="number" name="reqId" value="<?php echo $resgaf['id'];?>" hidden>
 		</fieldset>
 	</form>
 </div>
@@ -172,8 +172,9 @@
 		})
 
 		$(':required').before('<span class="required">*</span>');
-		var test = '<?php echo $resgaf['eventType'] == 1;?>';
-		if( test.length > 0){
+
+		var test = '<?php echo isset($_POST['reqId']) && !$resgaf['eventType'] ;?>';
+		if( test.length == 0){
 			$('#otherType').hide();
 		}
 		else{

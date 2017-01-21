@@ -1,5 +1,5 @@
 <?php include "includes/header.php";
-	$id = $_POST['reqId'];
+	$id = $_GET['reqId'];
 	$sql = "SELECT * FROM `eresgaf_request` WHERE `id` = $id";
 	$results = mysqli_query($link, $sql);
 	$resgaf = mysqli_fetch_assoc($results);
@@ -202,7 +202,7 @@
 
 	function edit(){
 		var form = '<form method="post" action ="newrequest.php" class="hide" id="formEdit">';
-		form += '<input type="number" name="resId" value="<?php echo $resgaf['id'];?>" >';
+		form += '<input type="number" name="reqId" value="<?php echo $resgaf['id'];?>" >';
 		form += '</form>';
 		$('#newComment').after(form);
 		$('#formEdit').submit();

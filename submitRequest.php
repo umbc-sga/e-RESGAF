@@ -10,7 +10,7 @@
 <?php
 	require "../../cgi-bin/mysqlcred.php";
 	$resId = 0;
-	if(isset($_POST['resId'])){
+	if(isset($_POST['reqId'])){
 		$sql = 'UPDATE `eresgaf_request` SET `organization`= "' . $_POST['organization'];
 		$sql .='",`email`="' . $_POST['email'] . '",`phone`="'. $_POST['phone'];
 		$sql .='",`budgetItem`="' . $_POST['budgetItem'] . '" ,`eventType`=';
@@ -21,13 +21,13 @@
 		}
 		$sql .=' WHERE `id` =' . $_POST['resId'];
 		mysqli_query($link, $sql);
-		$reqId = (int)($_POST['resId']);
+		$reqId = (int)($_POST['reqId']);
 		$sql = 'DELETE FROM `eresgaf_lineItem` WHERE `requestId`=' . $reqId;
 		mysqli_query($link, $sql);
-	}else if (0){
+	}else{
 		$sql = 'INSERT INTO `eresgaf_request`(`organization`, `creator`, `email`, `budgetItem`';
 		$vals = '' . '"' . $_POST['organization'] . '" ';
-		$vals .= ', "' . $_POST['creator'] . '", "' . $_POST['email'] . '", "' . $_POST['budgetItem'];
+		$vals .= ', "' . $_POST['creator'] . '", "' . $_POST['email'] . '", "' . $_POST['budgetItem'] . '"';
 
 		$sql .= ', `phone`, `eventType`';
 		$vals .= ', "' . $_POST['phone'] . '", ';

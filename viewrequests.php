@@ -42,7 +42,7 @@
 				}else{
 					echo 'Pending';
 				}
-				echo '</td><td class="edits"><button onclick="view(' . $row['id'] . ');" class="navButton editButton" type="button">View</button>';
+				echo '</td><td class="edits"><a href="request.php?reqId=' . $row['id'] . '"><button class="navButton editButton" type="button">View</button>';
 				echo '</tr>';
 			}
 		?>
@@ -52,13 +52,6 @@
 <script type="text/javascript">
 	window.onload = function(){
 		document.getElementById("navView").className += "navcurrent";
-	}
-	function view(id){
-		var form = '<form method="post" action="request.php" id="editform" class="hide">';
-		form += '<input type="number" value="' + id +'" name="reqId">';
-		form += '</form>';
-		$('table').after(form);
-		$('#editform').submit();
 	}
 </script>
 
