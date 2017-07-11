@@ -1,0 +1,30 @@
+# Additional File Types
+DefaultType application/x-httpd-php
+AddType text/cache-manifest .manifest
+AddType font/woff2    .woff2;
+AddType font/woff    .woff;
+
+# Caching
+FileETag MTime Size
+
+# Rewrite Rules
+RewriteEngine On
+# HTTPS Only
+RewriteBase /
+RewriteCond %{HTTPS} !=on
+RewriteRule ^(.*)$ https://%{SERVER_NAME}/$1 [R,L]
+# Try fixing nonworking urls
+RewriteBase /eresgaf/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)       /eresgaf/?q=$1
+
+# Require Shibboleth session to be active
+AuthType shibboleth
+ShibRequireSession on
+require valid-user
+
+# PHP Configuration
+php_value include_path ".:/usr/share/pear:/usr/share/php:includes:../includes:../../includes:../../../includes:../../../../includes"
+php_flag display_startup_errors on
+php_flag display_errors on
